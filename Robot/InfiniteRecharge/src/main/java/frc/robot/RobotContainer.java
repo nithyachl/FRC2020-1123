@@ -7,11 +7,18 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.commands.*;
+import frc.robot.subsystems.*;
+import frc.robot.shooterClass.*;
+
+import java.io.*/*Console*/;
+
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.Command;
+
+
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -20,19 +27,20 @@ import edu.wpi.first.wpilibj2.command.Command;
  * (including subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  private Joystick m_joystick = new Joystick(Constants.kJoystickChannel);
+  // The robot's subsystems and commands are defined here.
+  private final MecanumDriveSubsystem m_driveSubsystem = new MecanumDriveSubsystem();
+  private shooterClass shooter = new shooterClass();
 
-  private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
-
-
-
+  
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
+    
+    
   }
 
   /**
@@ -42,6 +50,15 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    System.out.println("At configureButtonBindings()");
+    JoystickButton ledButton = new JoystickButton(m_joystick, 2);
+    System.out.println("After get ledButton");
+    /**
+     * LED is not changing. Possibly not calling method or getting ledButton.
+     * Need to print to RIO logs or driver station console.
+     * 25/01/2020
+     */
+    ledButton.whenPressed(new InstantCommand(() -> LimelightVision.switchLEDState()));
   }
 
 
@@ -52,6 +69,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return m_autoCommand;
+    return new AutonomousCommand();
   }
 }
